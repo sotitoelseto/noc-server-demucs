@@ -16,39 +16,51 @@ const file_service = require('./modules/file-service.js')
 app.use(fileUpload());
 app.use(cors(corsOptions))
 
-app.get('/', (req, res) => {
-  return res.send("Root URL")
-})
+/*app.get('/', (req, res) => {
+  //return res.send(`<img src="https://rck-fileserver.jmjdrwrk.repl.co/display?imageId=62d69fa8e00222f7f91fc38d" alt="Failed to load image">`)
+  console.log('<h1> RCK-FILE-SERVER-END-POINT </h1>')
+})*/
 
 app.post('/upload', async function(req, res) {
   console.log('files??')
+
+
   let result = await file_service.save_image(db_conn, req.files, req.body.instrument_id)
   console.log(result)
-  res.send({'result':result})
+  res.send({ 'result': result })
 });
 
-app.get('/display',async function(req, res){
+app.get('/display', async function(req, res) {
   console.log('looking for ' + req.params)
   const result = await file_service.find_by_id(db_conn, req.query.imageId)
-  console.log(result[0])
-    const b64 = Buffer.from(result[0].data).toString('base64');
-    // CHANGE THIS IF THE IMAGE YOU ARE WORKING WITH IS .jpg OR WHATEVER
-    const mimeType = result[0].mimeType; // e.g., image/png
-    
-    res.send(`<img src="data:${mimeType};base64,${b64}" />`);
-    //res.sendFile('./public/bandera.jpg', { root: __dirname });
+  console.log(`displaying ${result[0].name}`)//console.log(result[0])
+  const b64 = Buffer.from(result[0].data).toString('base64');
+  // CHANGE THIS IF THE IMAGE YOU ARE WORKING WITH IS .jpg OR WHATEVER
+  const mimeType = result[0].mimeType; // e.g., image/png
+
+  var img = Buffer.from(result[0].data, 'base64');
+
+  res.writeHead(200, {
+    'Content-Type': 'image/png',
+    'Content-Length': img.length
+  });
+  res.end(img);
+  //res.send(`<img src="data:${mimeType};base64,${b64}" />`);
+  //res.sendFile('./public/bandera.jpg', { root: __dirname });
 })
 
-app.get('/instrument-images',async function(req, res){
+app.get('/instrument-images', async function(req, res) {
+  console.log('[QUERY] all images for given instrument id')
   const result = await file_service.find_by_instrumentId(db_conn, req.query.instrument_id)
   let resu = []
-  for(r of result){
+  for (r of result) {
     resu.push({
-      name : r.name,
-      id : r._id,
-      display: `https://RCK-FileServer.jmjdrwrk.repl.co/display?imageId=${r._id}`})
+      name: r.name,
+      id: r._id,
+      display: `https://RCK-FileServer.jmjdrwrk.repl.co/display?imageId=${r._id}`
+    })
   }
-    res.send(resu);
+  res.send(resu);
 })
 
 app.listen(PORT, () => {
