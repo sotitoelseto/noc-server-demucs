@@ -10,27 +10,27 @@ const corsOptions = {
   origin: "*",
 }
 
-const db_conn = require('./modules/database-connection.js')
+//const db_conn = require('./modules/database-connection.js')
 const file_service = require('./modules/file-service.js')
 
 app.use(fileUpload());
 app.use(cors(corsOptions))
 
 app.get('/', (req, res) => {
-  return res.send(db_conn.status())
+  return res.send('db_conn.status()')
   console.log('<h1> RCK-FILE-SERVER-END-POINT </h1>')
 })
 
 app.post('/upload', async function(req, res) {
-  console.log('files??')
-  let result = await file_service.save_image(db_conn, req.files, req.body.instrument_id)
+  console.log('files?? ' + files.files)
+  let result = await file_service.save_image(req.files, req.body.instrument_id)
   console.log(result)
   res.send({ 'result': result })
 });
 
 app.get('/display', async function(req, res) {
   console.log('looking for ' + req.params)
-  const result = await file_service.find_by_id(db_conn, req.query.imageId)
+  const result = await file_service.find_by_id(req.query.imageId)
   //console.log(`RESULT: ${JSON.stringify(result[0].name)}`)
   //console.log(`displaying ${result[0].name}`)//console.log(result[0])
   const b64 = Buffer.from(result.data).toString('base64');
@@ -52,7 +52,7 @@ app.get('/display', async function(req, res) {
 app.get('/instrument-images', async function(req, res) {
   console.log('[QUERY] all images for given instrument id')
 
-    const result = await file_service.find_by_instrumentId(db_conn, req.query.instrument_id)
+    const result = await file_service.find_by_instrumentId(req.query.instrument_id)
 
     if(result == 'undefined'){console.log('POSIBLE ERROR INCOMING')}
     

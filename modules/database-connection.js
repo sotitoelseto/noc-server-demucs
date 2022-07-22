@@ -9,25 +9,26 @@ var CLOSED = 0
 
 function status() {
   console.log('***** STATUS *****')
-  return JSON.stringify({ active_connections: CONNECTIONS,
-                          openned_connections : OPENNED,
-                          closed_connections : CLOSED,
-                          time : Date.now(),
-                          time_stamp : new Date(Date.now())
-                        })
+  return JSON.stringify({
+    active_connections: CONNECTIONS,
+    openned_connections: OPENNED,
+    closed_connections: CLOSED,
+    time: Date.now(),
+    time_stamp: new Date(Date.now())
+  })
 }
 //to pass from miliseconds time to normal date use let date_ob = new Date(ts);
 
-function getConnection() {
+async function getConnection() {
   console.log('****  CONNECTION OPENNED *****')
   CONNECTIONS += 1
   OPENNED += 1
-  /*var fs = require('fs')
-  fs.appendFile('./logs/connections.txt','\n'+JSON.stringify({
-    operation : 'getConnection()',
-    status : JSON.parse(status())
-  }))*/
+  //https://www.mongodb.com/docs/drivers/node/current/fundamentals/connection/connect/#std-label-node-connect-to-mongodb
   return client.db('RCK');
+}
+
+async function getClient() {
+  return client
 }
 
 async function notify_close() {
@@ -35,13 +36,9 @@ async function notify_close() {
   CONNECTIONS -= 1
   CLOSED += 1
   console.log('****  CONNECTION CLOSED *****')
-  /*var fs = require('fs')
-  fs.appendFile('./logs/connections.txt','\n'+JSON.stringify({
-    operation : 'getConnection()',
-    status : JSON.parse(status())
-  }))*/
   console.log('\t active connections ' + CONNECTIONS)
 }
+
 //Compare properties between two documents to fill the updateQuery
 function getChanges(oldDoc, newDoc) {
   const oldkeys = Object.keys(oldDoc)
@@ -83,8 +80,10 @@ function getChanges(oldDoc, newDoc) {
 
 module.exports = {
   getConnection,
+  getClient,
   status,
   getChanges,
   notify_close,
-  CONNECTIONS
+  CONNECTIONS,
+  client
 };

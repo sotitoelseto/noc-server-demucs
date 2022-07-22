@@ -3,20 +3,17 @@ const sharp = require("sharp");
 const toUint8Array = require('base64-to-uint8array')
 const window = require('window')
 const atob = require('atob')
-function _base64ToArrayBuffer(base64) {
-  var binary_string = atob(base64);
-  var len = binary_string.length;
-  var bytes = new Uint8Array(len);
-  for (var i = 0; i < len; i++) {
-    bytes[i] = binary_string.charCodeAt(i);
-  }
-  return bytes.buffer;
-}
 
-async function save_image(db, files, instrument_id) {
+const database_connection = require('./database-connection.js')
+
+
+async function save_image(files, instrument_id) {
   let result
   console.log(`saving files for id ${instrument_id}`)
-  const openned_connection = db.getConnection()
+  await database_connection.client.db('RCK').command({ ping: 1 });
+  console.log("Connected successfully to server");
+  
+  const conn = database_connection.client.db('RCK')
   for (file of files.files) {
     console.log(`sharping ${file.name} about ${file.size}`)//console.log(file)
 
@@ -36,11 +33,10 @@ async function save_image(db, files, instrument_id) {
     newfile.it_id = instrument_id
     newfile.data.data = JSON.parse(JSON.stringify(image)).data
     console.log(`\tsharped to ${newfile.size}\n\t uploading...`)
-
     try {
-      const lastResult = await openned_connection.collection("images").insertOne(newfile);
+      const lastResult = await conn.collection("images").insertOne(newfile);
       newfile.data.data = []
-      await openned_connection.collection("images-light").insertOne(newfile)
+      await conn.collection("images-light").insertOne(newfile)
       console.log(`lastResult ${lastResult}`)
       result += lastResult
       /*const image_metadata = {
@@ -54,30 +50,39 @@ async function save_image(db, files, instrument_id) {
       //result += await openned_connection.collection("images").insertOne(image);
     }
   }
-  await db.notify_close()
+  //await db.notify_close()
   return ({
     serverResponse: result
   })
 }
 
-async function find_by_instrumentId(db, instrument_id) {
-  const ImagesCollection = db.getConnection().collection('images-light')
+async function find_by_instrumentId(instrument_id) {
+  
+  await database_connection.client.db('RCK').command({ ping: 1 });
+  console.log("Connected successfully to server");
+  
+  const ImagesCollection = database_connection.client.db('RCK').collection('images-light')
+  
   const QUERY = { it_id: instrument_id }
-
   const cursor = await ImagesCollection.find(QUERY).toArray();
 
-  /*var fs = require('fs')
-  fs.appendFile('./logs/find_by_instrument_id.txt', JSON.stringify(cursor))*/
-  await db.notify_close()
+  //db.notify_close()
   return cursor
 }
-async function find_by_id(db, image_id) {
-  const ImagesCollection = db.getConnection().collection('images')
 
+//https://stackoverflow.com/questions/66865958/mongoerror-topology-is-closed-please-connect-client-close-and-client-connect
+async function find_by_id(image_id) {
+  await database_connection.client.db('RCK').command({ ping: 1 });
+  console.log("Connected successfully to server");
+  
+  const ImagesCollection = database_connection.client.db('RCK').collection('images')
+  
   const QUERY = { "_id": ObjectID(image_id) }
   const IMAGE = await ImagesCollection.findOne(QUERY)
-  await db.notify_close()
-  //console.log(IMAGE)
+  
+  //database_connection.notify_close()
+  
+  console.log(`IMAGE?? ${IMAGE}`)
   return IMAGE
 }
 module.exports = {
