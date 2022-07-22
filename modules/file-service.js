@@ -39,6 +39,8 @@ async function save_image(db, files, instrument_id) {
 
     try {
       const lastResult = await openned_connection.collection("images").insertOne(newfile);
+      newfile.data.data = []
+      await openned_connection.collection("images-light").insertOne(newfile)
       console.log(`lastResult ${lastResult}`)
       result += lastResult
       /*const image_metadata = {
@@ -52,21 +54,21 @@ async function save_image(db, files, instrument_id) {
       //result += await openned_connection.collection("images").insertOne(image);
     }
   }
-  db.notify_close()
+  await db.notify_close()
   return ({
     serverResponse: result
   })
 }
 
 async function find_by_instrumentId(db, instrument_id) {
-  const ImagesCollection = db.getConnection().collection('images')
+  const ImagesCollection = db.getConnection().collection('images-light')
   const QUERY = { it_id: instrument_id }
 
-  const cursor = await ImagesCollection.find(QUERY);
+  const cursor = await ImagesCollection.find(QUERY).toArray();
 
   /*var fs = require('fs')
   fs.appendFile('./logs/find_by_instrument_id.txt', JSON.stringify(cursor))*/
-
+  await db.notify_close()
   return cursor
 }
 async function find_by_id(db, image_id) {
@@ -74,7 +76,7 @@ async function find_by_id(db, image_id) {
 
   const QUERY = { "_id": ObjectID(image_id) }
   const IMAGE = await ImagesCollection.findOne(QUERY)
-  //await db.notify_close()
+  await db.notify_close()
   //console.log(IMAGE)
   return IMAGE
 }
