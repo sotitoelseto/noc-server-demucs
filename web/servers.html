@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/table.css">
+  <script src="/js/script.js"></script>
+  <script src="/js/serverapi.js"></script>
+  <title>Document</title>
+</head>
+
+<body>
+  <ul class="server-status-info">
+    <p> Server Status</p>
+    <li>Running</li>
+    <li class="warning">Warning</li>
+    <li class="offline">Offline</li>
+  </ul>
+
+  <div class="server-rack">
+    <P class="label"> DEMUXER CORES</P>
+
+  </div>
+
+</body>
+<table>
+  <thead>
+
+  </thead>
+  <tbody>
+
+  </tbody>
+</table>
+
+
+<script>
+  var obj = {
+    "bootTime": "2022/9/3 10:21:57",
+    "platform": {
+      "System": "Windows",
+      "NodeName": "DESKTOP-9GD9HNL",
+      "Release": "10",
+      "Version": "10.0.19043",
+      "Machine": "AMD64",
+      "Processor": "AMD64 Family 23 Model 8 Stepping 2, AuthenticAMD"
+    },
+    "network": {
+      "mip": "192.168.1.66"
+    },
+    "memory": {
+      "Total": "29.30GB",
+      "Available": "7.85GB",
+      "Used": "11.30GB",
+      "Percentage": "38.6%",
+      "Free": "18.00GB"
+    },
+    "disk": {
+      "C://": {
+        "TotalSize": "223.57GB",
+        "Used": "214.68GB",
+        "Free": "8.88GB",
+        "Percentage": "96.0%"
+      },
+      "Q://": {
+        "TotalSize": "1.82TB",
+        "Used": "538.91GB",
+        "Free": "1.29TB",
+        "Percentage": "28.9%"
+      },
+      "U://": {
+        "TotalSize": "238.47GB",
+        "Used": "25.09GB",
+        "Free": "213.38GB",
+        "Percentage": "10.5%"
+      }
+    },
+    "cpu": {
+      "Physicalcores": 6,
+      "Totalcores": 12,
+      "MaxFrequency": "3200.00Mhz",
+      "MinFrequency": "0.00Mhz",
+      "CurrentFrequency": "3200.00Mhz",
+      "TotalCPUUsage": "16.1%",
+      "forCpu": {
+        "Core 0": "19.7%",
+        "Core 1": "13.8%",
+        "Core 2": "13.8%",
+        "Core 3": "18.5%",
+        "Core 4": "15.4%",
+        "Core 5": "12.3%",
+        "Core 6": "20.0%",
+        "Core 7": "10.8%",
+        "Core 8": "18.5%",
+        "Core 9": "9.2%",
+        "Core 10": "20.0%",
+        "Core 11": "12.3%"
+      }
+    },
+    "gpu": {
+      "NVIDIAGeForceGTX750": {
+        "name": "NVIDIAGeForceGTX750",
+        "load": "13.0%",
+        "memoryFree": "1045.0MB",
+        "memoryUsed": "962.0MB",
+        "memoryTotal": "2048.0MB",
+        "temperature": "0.0C"
+      }
+    }
+  }
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function JSON2HTML(objct) {
+    function toggleNight() {
+      document.getElementsByTagName('table')[0].classList.toggle('night')
+      //document.body.style.backgroundColor = '#919191'
+      return this
+    }
+    function animate(ms) {
+      hideAfter(0)
+      showStepped(ms)
+      return this
+    }
+    function reverseAnimate(ms) {
+      showStepped(0)
+      hideAfter(ms)
+      return this
+    }
+
+    function randomizeColors(allow, recursive = false, ms) {
+      randomized(allow, recursive, ms)
+      return this
+    }
+
+    function hide() {
+      document.getElementsByTagName('table')[0].style.display = 'none'
+      document.getElementsByTagName('table')[0].style.visibility = 'hidden'
+      return this
+    }
+    function show() {
+
+      document.getElementsByTagName('table')[0].style.visibility = ''
+
+      document.getElementsByTagName('table')[0].style.display = ''
+
+      return this
+    }
+    return {
+      "night": toggleNight,
+      "hide": hide,
+      "show": show,
+      "randomizeColors": randomizeColors,
+      "reverseAnimation": reverseAnimate,
+      "animation": animate,
+      "TABLE": function JSON2HTML(objct) {
+        let obj = objct
+        let table = document.getElementsByTagName('table')[0].getElementsByTagName('tbody')[0]
+        let dox = ''
+
+        function toTableElement(str) {
+          let newTableTemplate = `
+                    <table>
+                        <thead>
+                
+                        </thead>
+                        <tbody>
+                            ${str}
+                        </tbody>
+                    </table>
+                    `
+          dox = new DOMParser().parseFromString(newTableTemplate, 'text/html').getElementsByClassName('jsontotable')[0];
+          return dox
+        }
+
+        function HTML(template, inner) {
+          let dox2 = toTableElement(template)
+          //replace console.log("dox2",dox2)
+          dox2.innerHTML = inner
+          return dox2
+        }
+
+        function getClassByOrder(order) {
+
+          switch (order) {
+            case 1:
+              return "jsontotable " + "ta1"
+
+            case 2:
+              return "jsontotable " + "ta2"
+
+            case 3:
+              return "jsontotable " + "ta3"
+          }
+        }
+
+
+
+        function th(node, title, order = 1) {
+          //FOR ON ELEMENTS CLICK
+          async function OnClick(e) {
+            console.log('EVENT', e)
+            e.preventDefault()
+            // let display = ''
+            // if(html.parentNode.getElementsByTagName('tr')[0].style.display!='none'){
+            //     display = 'none'
+            // }else{
+            //     display = ''
+            // }
+            for (let child of html.parentNode.getElementsByTagName('tr')) {
+              await sleep(15)
+              child.classList.toggle('dspnone');
+            }
+            html.childNodes[0].classList.toggle('mark')
+          }
+
+          function OnContextMenu(e) {
+            e.preventDefault()
+            console.log('EVENT', e)
+            html.classList.toggle('left_mark')
+            console.log(html.className)
+          }
+
+          let html = HTML(`<th class='jsontotable'>${title}</th>`, title)
+          html.className = getClassByOrder(order)
+          html.addEventListener("contextmenu", OnContextMenu)
+          html.addEventListener('click', OnClick)
+          node.appendChild(html)
+          return html
+        }
+
+        function td(node, title, order = 1) {
+          let html = HTML(`<td class='jsontotable'>${title}</td>`, title)
+          html.className = getClassByOrder(order)
+          node.appendChild(html)
+          return html
+        }
+
+        function tr(node, title, order = 1) {
+          let html = HTML(`<tr class='jsontotable'>${title}</tr>`, title)
+          html.className = getClassByOrder(order)
+          node.appendChild(html)
+          return html
+        }
+
+        for (let row of Object.keys(obj)) {
+          let o1 = obj[row]
+          let row_tr = tr(table, "", 1)
+          let row_th = th(row_tr, row, 1)
+
+          if (typeof o1 == 'object') {
+            //replace console.log(`${row}`)
+
+            for (let row_row of Object.keys(o1)) {
+
+              let o2 = o1[row_row]
+              let row_row_tr = tr(row_tr, "", 2)
+              let row_row_th = th(row_row_tr, row_row, 2)
+
+              if (typeof o2 == 'object') {
+                //replace console.log(`\t${row_row}`)
+
+                for (let row_row_row of Object.keys(o2)) {
+
+                  let o3 = o2[row_row_row]
+
+                  let row_row_row_tr = tr(row_row_tr, "", 3)
+                  let row_row_row_th = th(row_row_row_tr, row_row_row, 3)
+
+                  if (typeof o3 == 'object') {
+                    //replace console.log('max recursive limit')
+
+                  } else {
+                    //replace console.log(`\t\t${row_row_row} ${o3}`)
+
+                    let row_row_row_td = td(row_row_row_tr, o3, 3)
+                  }
+                }
+              } else {
+                //replace console.log(`\t${row_row} ${o2}`)
+
+                let row_row_td = td(row_row_tr, o2, 2)
+              }
+            }
+          } else {
+            //replace console.log(`o1: ${row}${o1}`)
+
+            //let rtr = tr(table,"")
+            //let rth = th(rtr,row)
+            let rtd = td(row_tr, o1, 1)
+          }
+        }
+        //Important to concatenate methods from this
+        return this
+      }
+
+    }
+  }
+  async function hideAfter(ms) {
+    for (let eachElement of document.getElementsByClassName('jsontotable')) {
+      await sleep(ms)
+      eachElement.style.visibility = 'hidden'
+    }
+  }
+  //hideAfter()
+
+  async function showStepped(ms) {
+    for (let eachElement of document.getElementsByClassName('jsontotable')) {
+      await sleep(ms)
+      eachElement.style.visibility = ''
+    }
+  }
+  //showStepped()
+
+  async function randomized(allow = [], recursiveColoring, ms = 0) {
+    //https://love2dev.com/blog/javascript-remove-from-array/
+    // function arrayRemove(arr, value) { 
+    //     return arr.filter(function(ele){ 
+    //         return ele != value; 
+    //     });
+    // }
+
+    console.log(recursiveColoring)
+    //Random string to use as a color
+    SCHEMA = recursiveColoring.schema
+    function randomColor() {
+      // Fast Copied From https://css-tricks.com/snippets/javascript/random-hex-color/
+      if (recursiveColoring.useSchema && recursiveColoring.useSchema) {
+        console.log('random color from custom schema not working')
+        let selection = SCHEMA.shift()
+        return selection
+      } else {
+        return "#" + Math.floor(Math.random() * 16777215).toString(16);
+      }
+
+    }
+
+    //Mortal Logic Code MLC
+    function check(eachElement) {
+      let finalBool = true
+      for (let condition of allow) {
+        let booltime = 0
+        let interBool = true
+        for (let param of Object.keys(condition)) {
+
+          if (eachElement[param].toLowerCase() != condition[param].toLowerCase()) {
+
+            interBool = false
+          } else {
+            if (interBool && Object.keys(condition).indexOf(param) == Object.keys(condition).length - 1) {
+              return true
+            }
+          }
+        }
+        finalBool = interBool
+      }
+      return finalBool
+    }
+
+    let alls = document.getElementsByClassName('jsontotable')
+    let lastParent = document.createElement('div')
+    let ran = randomColor()
+    for (let eachElement of alls) {
+      await sleep(ms)
+      if (check(eachElement)) {
+        //console.log(eachElement.className)
+        if (recursiveColoring.recursiveColoring) {
+          if (eachElement.className == `jsontotable ${recursiveColoring.Node}`) {
+            if (lastParent != eachElement) {
+              lastParent = eachElement
+              ran = randomColor()
+            }
+          }
+        } else {
+          ran = randomColor()
+        }
+        eachElement.style.backgroundColor = ran
+      }
+    }
+  }
+
+</script>
+
+<script type="text/javascript">
+
+
+  function flatenate(el,id) {
+    console.log('ID',id)
+    try {
+      document.getElementsByTagName('tbody')[0].innerHTML = ''
+    } catch (error) { console.error('Table not found') }
+    let recursiveColoring = true
+    //Color schemes created with https://color.hailpixel.com/#D5BC81,286477,7A2929,CC7A66,2B8278,2A7E54,D68585,A838A5,A16836
+    console.log(JSON.stringify(response))
+    JSON2HTML().TABLE(response[id].data).hide().show().animation(0).randomizeColors(
+      [
+        { className: 'jsontotable ta1', tagName: 'th' },
+        { className: 'jsontotable ta2', tagName: 'th' },
+        { className: 'jsontotable ta3', tagName: 'th' }
+      ], {
+      "recursiveColoring": true,
+      "Node": "ta1",
+      "useSchema": true,
+      "useCustomSchema": true,
+      "schema": ['#D5BC81', '#286477', '#7A2929', '#CC7A66', '#2B8278', '#2A7E54', '#D68585', '#C28F47', '#A838A5', '#A16836']
+    }, 0)
+ 
+    // sv = el.querySelectorAll('.server')[0]
+    // st = el.querySelectorAll('.spand')[0]
+    // svi = el.querySelectorAll('.server-info')[0]
+    // si = el.querySelectorAll('.spand-info')[0]
+    // console.log(st.getAttribute('data-spanded')=="false")
+    // if(st.getAttribute('data-spanded')=="true"){
+    //   sv.style.height = "45px";
+    //   st.setAttribute('data-spanded',false)
+    //   si.style.display = "none"
+    //   svi.style.top = "15%"
+
+    // }else if(st.getAttribute('data-spanded')=="false"){
+    //   sv.style.height = "800px"
+    //   si.style.display = "block"
+    //   st.setAttribute('data-spanded',true)
+    //   console.log(si)
+    //   svi.style.top = "40%"
+    // }
+    // sv.style.height = "100px"
+
+  }
+  var response
+  window.onload = async function () {
+    response = await ServerApi.doGet("/demuxer/cores")
+    console.log(response)
+    var server_case = document.getElementsByClassName("server-rack")[0]
+    for (server of response) {
+
+      details = ''
+      function addLine(key, value) {
+        details += `${key} ${value}`
+      }
+
+      console.log(JSON.stringify(server.data))
+      Object.keys(server.data).forEach(function (key) {
+        if (typeof server.data[key] == 'object') {
+          Object.keys(server.data[key]).forEach(function (skey) {
+            if (typeof server.data[key][skey] == 'object') {
+              Object.keys(server.data[key][skey]).forEach(function (sskey) {
+                console.log('Key3 : ' + key + ', Value : ' + server.data[key][skey][sskey])
+                addLine(key, server.data[key][skey][sskey])
+              })
+            } else {
+              console.log('Key2 : ' + key + ', Value : ' + server.data[key][skey])
+              addLine(key, server.data[key][skey])
+            }
+          })
+        } else {
+          console.log('Key1 : ' + key + ', Value : ' + server.data[key])
+          addLine(key, server.data[key])
+        }
+      })
+      notxpanded = true
+      var template = `
+      <a href="#/" class="each-server" onclick="flatenate(this,${response.indexOf(server)})"">
+        <div class="server">
+          <div class="spand" data-spanded=${notxpanded} hidden></div>
+          <ul class="server-status">
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+          <p class="server-info">
+            ${server.data.cpu.CurrentFrequency} ${server.data.network.mip} 
+            <span class="spand-info" hidden>${server.data.platform.System} ${server.data.platform.Machine} ${details}</span>
+          </p>
+
+          <div class="hdd"></div>
+        </div>
+      </a>
+        `
+
+
+      let doc = new DOMParser().parseFromString(template, 'text/html').querySelector('.each-server');
+      // doc.querySelector('.server-info').innerHTML = ` `
+      server_case.appendChild(doc)
+      //flatenate(doc)
+
+    }
+  }
+</script>
+
+</html>

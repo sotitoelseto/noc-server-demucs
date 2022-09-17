@@ -1,0 +1,227 @@
+body {
+    background: #fafafa url(https://jackrugile.com/images/misc/noise-diagonal.png);
+    color: #444;
+    /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif */
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+    /* text-shadow: 0 1px 0 #fff; */
+  }
+  /* table.night, body{
+    background-color: rgb(55, 55, 55);
+  } */
+  #nightlight {
+    border-radius: 10px;
+    border: 0px;
+    background-color: transparent;
+    font-size: 50px;
+    text-indent: asd;
+    margin-right: 50%;
+    margin-left: 50%;
+    content: 🌘;
+  }
+  table.night , td{
+    background-color: #414141;
+  }
+  table.night  td{
+    color: rgb(177, 177, 177);
+    background-color:transparent;
+  }
+  table.night td, tr,th,tbody {
+    /* border: 0.5px solid rgb(206, 206, 206);  */
+   /* transition: all 0.1s linear;*/
+  }
+
+  table {
+    border-collapse: separate;
+    box-shadow: inset 0 1px 0 #fff;
+    font-size: 16px;
+    /* line-height: 24px; */
+    margin: 30px auto;
+    /* text-align: left; */
+    /* //width: 100%; */
+    margin-left: 20%;
+    margin-right: 20%;
+    box-shadow: -5px 8px 8px -0px rgb(119, 117, 117);
+  }
+  th {
+    /* FIXED WIDTH */
+    min-width: 180px;
+    width:     180px;
+    max-width: 180px;
+
+    padding: 10px 15px;
+    text-align: center;
+    /* border-radius: 10px; */
+    /* Overriding the user agent def */
+    font-weight: lighter !important;
+  }
+
+  th.ta1{
+    color: white;
+    background-color: rgb(74, 74, 74);
+  }
+
+  th.ta2{
+    color: white;
+    background-color: rgb(96, 96, 96);
+  }
+
+  th.ta3{
+    color: white;
+    background-color: rgb(127, 127, 127);
+  }
+
+  td, th, tr, table, tbody {
+   /* border: 1px solid rgb(0, 0, 0); */
+   /* transition: all 0.1s linear; */
+  }
+
+  td {
+    width: 800px;
+    background-color: rgba(209, 209, 209, 0.337);
+  }
+
+  td.night {
+    color: white;
+  } 
+
+  td.ta1 {
+    color: rgb(60, 60, 60);
+    /* border: 1px solid rgb(2, 224, 28); */
+  }
+  td.ta2{
+    color: rgb(60, 60, 60);
+    /* border: 1px solid rgb(83, 83, 83); */
+  }
+  td.ta3{
+    color: rgb(60, 60, 60);
+
+    /* border: 1px solid rgb(83, 83, 83); */
+  }
+
+  /*Is toggled when some element with anothers inside is right-clicked*/
+  .dspnone {
+    transition: visibility 0s, opacity 0.5s linear;
+    display: none;
+    opacity: 0;
+  }
+
+  .mark {
+    /* height: 300px !important; */
+    /* height: 1px !important;
+    transform-origin: bottom !important;
+    transition: height 0.5s ease-out !important; */
+    /* background-color: red;
+    color: red;
+    border: 10px solid rgb(187, 187, 187); */
+    /* transition: max-height 0.15s ease-out; */
+    /* transition: 100px 1s ease-out; */
+    /* //transition: visibility 0s, opacity 0.5s linear; */
+    max-height: 10px !important;
+    
+    opacity: 0.6;
+  }
+  /* Used to MARK as IMPORTANT with left click */
+  .left_mark{
+    /* background-color: rgba(132, 0, 0, 0.469) !important; */
+    box-shadow: -5px 8px 8px -0px rgb(119, 117, 117);
+
+    text-shadow:
+    0 0 7px #fff,
+    0 0 10px #fff,
+    0 0 21px #fff,
+    0 0 42px #0fa,
+    0 0 82px #0fa,
+    0 0 92px #0fa,
+    0 0 102px #0fa,
+    0 0 151px #0fa;
+  }
+  /* .dspdefault {
+    transition: all 2s linear;
+    display: block;
+  } */
+
+
+
+
+  /* th {
+    background: url(https://jackrugile.com/images/misc/noise-diagonal.png),
+      linear-gradient(#444, #444);
+
+    box-shadow: inset 0 1px 0 #999;
+    color: #fff;
+
+    padding: 10px 15px;
+    position: relative;
+    text-shadow: 0 1px 0 #000;
+    text-align: center;
+  } */
+  /*
+  th:after {
+    /* background: linear-gradient(
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0.08)
+    );
+    content: "";
+    display: block;
+    height: 25%;
+    left: 0;
+    margin: 1px 0 0 0;
+    position: absolute;
+    top: 25%;
+    width: 100%;
+  }*/
+/*
+  th:first-child {
+
+    box-shadow: inset 1px 1px 0 #999;
+  }
+
+  th:last-child {
+    box-shadow: inset -1px 1px 0 #999;
+  }
+
+  td {
+
+    padding: 10px 15px;
+    position: relative;
+    transition: all 300ms;
+  }
+
+  td:first-child {
+    box-shadow: inset 1px 0 0 #fff;
+  }
+
+  td:last-child {
+    border-right: 1px solid #e8e8e8;
+    box-shadow: inset -1px 0 0 #fff;
+  }
+
+  tr {
+    background: url(https://jackrugile.com/images/misc/noise-diagonal.png);
+  }
+
+  tr:nth-child(odd) td {
+    background: #f1f1f1 url(https://jackrugile.com/images/misc/noise-diagonal.png);
+  }
+
+  tr:last-of-type td {
+    box-shadow: inset 0 -1px 0 #fff;
+  }
+
+  tr:last-of-type td:first-child {
+    box-shadow: inset 1px -1px 0 #fff;
+  }
+
+  tr:last-of-type td:last-child {
+    box-shadow: inset -1px -1px 0 #fff;
+  }
+   */
+  /* tbody:hover td {
+    color: transparent;
+    text-shadow: 0 0 3px #aaa;
+  }
+
+  tbody:hover tr:hover td {
+    color: #444;
+    text-shadow: 0 1px 0 #fff;
+  } */

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+  
+    <div id="main-form" class="card" >
+        <form method="post" action="/upload" enctype="multipart/form-data" style="max-width: 200px;">
+<!--             <div class="form-group">
+              <label for="token">User Token</label>
+              <input type="token" class="form-control" id="token" aria-describedby="token" placeholder="Enter your token">
+            </div> -->
+              <div class="form-group">
+                <label for="file">Select only one mp3 with < 10Mb</label>
+                <input accept=".mp3,audio/*" type="file" id="file" name="file" multiple>
+              </div>
+             <div>
+               <button>Submit</button>
+             </div>
+          </form> 
+    </div>
+    <style>
+        #main-form {
+            border-radius: 15px;
+            padding: 10px;
+            position: absolute;
+            right: 30%;
+            left: 30%;
+            top: 25%;
+            box-shadow: -1em 0 0.4em rgb(65, 65, 65);
+        }
+    </style>
+</body>
+</html>

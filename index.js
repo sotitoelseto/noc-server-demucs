@@ -2,83 +2,115 @@ const express = require('express')
 const fileUpload = require('express-fileupload')
 const app = express()
 const fs = require('fs')
+const bodyParser = require('body-parser')
 const PORT = 3000
-
+const multer = require("multer");
 const cors = require('cors')
-
+const { request } = require('https')
+//npm install node - rdkafka
 const corsOptions = {
   origin: "*",
 }
-
-//const db_conn = require('./modules/database-connection.js')
-const file_service = require('./modules/file-service.js')
-
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(fileUpload());
 app.use(cors(corsOptions))
-
-app.get('/', (req, res) => {
-  return res.send('db_conn.status()')
-  console.log('<h1> RCK-FILE-SERVER-END-POINT </h1>')
-})
-
-app.post('/upload', async function(req, res) {
-  console.log('files?? ' + files.files)
-  let result = await file_service.save_image(req.files, req.body.instrument_id)
-  console.log(result)
-  res.send({ 'result': result })
+app.use(express.static('web/'));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');//hace que los metodos = functions que sean post, get .... no tengan problemas de seguridad y     puedan devolver y recibir los datos esperados
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.set('Access-Control-Expose-Headers', '*')
+  next();
+});
+app.get('/producer', async (req, res) => {
+  await awaitData(res, 10000)
+  //res.send('data')
 });
 
-app.get('/display', async function(req, res) {
-  console.log('looking for ' + req.params)
-  const result = await file_service.find_by_id(req.query.imageId)
-  //console.log(`RESULT: ${JSON.stringify(result[0].name)}`)
-  //console.log(`displaying ${result[0].name}`)//console.log(result[0])
-  const b64 = Buffer.from(result.data).toString('base64');
-  // CHANGE THIS IF THE IMAGE YOU ARE WORKING WITH IS .jpg OR WHATEVER
-  const mimeType = result.mimeType; // e.g., image/png
+app.get('/', (req, res) => {
+  const data = fs.readFileSync('web/index.html', 'utf8')
+  res.send(data)
+});
+app.get('/waitRoom', (req, res) => {
+  const data = '<p>Your song is going to be processed</p>'
+  res.send(data)
+});
+app.get('/src/:fileName', (req, res) => {
+  const fileName = req.params['fileName']
+  res.download(`uploads/${fileName}`)
+})
+app.get('/dev', (req, res) => {
+  const data = STACK
+  res.send(data)
+});
+app.get('/stack', (req, res) => {
+  const data = [STACK.shift()]
+  res.send(data)
+});
+app.get('/demuxer/cores', (req, res) => {
+  const data = fs.readFileSync('web/servers.html', 'utf8')
+  res.send(data)
+});
+const PUBLISHED = []
 
-  var img = Buffer.from(result.data, 'base64');
-
-  res.writeHead(200, {
-    'Content-Type': 'image/png',
-    'Content-Length': img.length
-  });
-  res.end(img);
-
-  //res.send(`<img src="data:${mimeType};base64,${b64}" />`);
-  //res.sendFile('./public/bandera.jpg', { root: __dirname });
+app.post('/publish', async (req, res) => {
+  console.log('waiting')
+  const jbody = req.data
+  console.log(JSON.stringify(req.body))
+  // if (jbody.success) {
+  //   PUBLISHED.push()
+  // }
+  res.send('fix response to dynamic res')
 })
 
-app.get('/instrument-images', async function(req, res) {
-  console.log('[QUERY] all images for given instrument id')
+const ALLOWED = ['ferjo']
+const STACK = []
 
-    const result = await file_service.find_by_instrumentId(req.query.instrument_id)
 
-    if(result == 'undefined'){console.log('POSIBLE ERROR INCOMING')}
-    
-    let resu = []
-  
-    for (r of result) {
-      resu.push({
-        name: r.name,
-        id: r._id,
-        display: `https://RCK-FileServer.jmjdrwrk.repl.co/display?imageId=${r._id}`
-      })
+app.post('/upload', async (req, res) => {
+  //console.log(JSON.stringify(req.body))
+  if (true) {
+    try {
+      if (!req.files) {
+        res.send({
+          status: false,
+          message: 'No file uploaded'
+        });
+      } else {
+
+        console.log(Object.keys(req.files.file))
+
+
+        fs.writeFile('uploads/' + req.files.file.name, req.files.file.data, err => {
+          if (err) {
+            console.error(err);
+          }
+          // file written successfully
+        });
+
+        //REg to the task list
+        STACK.push({ 'name': req.files.file.name, 'size': req.files.file.size, 'mimetype': req.files.file.mimetype })
+
+        //Notify clients there is new task
+        require('request').get("https://pbsc.jmjdrwrk.repl.co/notify/newtask")
+
+        res.writeHead(302, {
+          'Location': 'https://DemucsMaster.jmjdrwrk.repl.co/waitRoom'
+        });
+        res.end();
+
+        //send response
+        // res.send({
+        //   status: true,
+        //   message: 'File is uploaded'
+        // });
+      }
+    } catch (err) {
+      res.status(500).send(err);
     }
-    res.send(resu);
-  /*
-    console.log(`[ERROR] retrieving all images for instrument ${req.query.instrument_id}`)
-    fs.appendFile('./logs/errors.txt','\n'+JSON.stringify({
-    operation : 'instrument-images()',
-    status : JSON.parse(db_conn.status()),
-    ERROR : e
-  }))*/
-})
+  }
 
-app.get('/self/status', function(req, res) {
-  return db_conn.status()
-})
-
+});
 app.listen(PORT, () => {
   console.log(`Example app listening at http://localhost:${PORT}`)
 })
